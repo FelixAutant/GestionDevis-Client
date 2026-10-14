@@ -17,9 +17,11 @@ until console doctrine:migrations:migrate --no-interaction --allow-no-migration;
     sleep 5
 done
 
-# DEMO_MODE=1 : charge un jeu de données de démonstration, uniquement si la base ne contient aucun utilisateur.
+# DEMO_MODE=1 : remet les données de démonstration à zéro à chaque démarrage (déploiement, ou réveil après
+# la mise en veille de l'hébergeur). La commande refuse de purger une base qui contient de vrais comptes ;
+# dans ce cas le serveur démarre quand même.
 if [ "${DEMO_MODE:-0}" = "1" ]; then
-    console app:demo:seed
+    console app:demo:seed --reset || echo "Remise à zéro de la démo ignorée." >&2
 fi
 
 exec apache2-foreground

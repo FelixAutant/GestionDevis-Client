@@ -40,6 +40,37 @@ final class SeedDemoCommandTest extends DatabaseWebTestCase
         self::assertSame($count, $this->em->getRepository(User::class)->count([]));
     }
 
+    public function testResetRestoresTheDemoData(): void
+    {
+        $this->em->createQuery('DELETE FROM App\Entity\QuoteLine')->execute();
+        $this->em->createQuery('DELETE FROM '.Quote::class)->execute();
+        $this->em->clear();
+
+        $tester = $this->tester();
+        $tester->execute(['--reset' => true]);
+
+        $tester->assertCommandIsSuccessful();
+        self::assertStringContainsString('remises à zéro', $tester->getDisplay());
+        self::assertSame(2, $this->em->getRepository(User::class)->count([]));
+        self::assertSame(5, $this->em->getRepository(Quote::class)->count([]));
+    }
+
+    public function testResetRefusesWhenARealAccountExists(): void
+    {
+        $real = (new User())->setEmail('artisan@exemple.fr')->setCompanyName('Vrai artisan')->setPassword('x');
+        $this->em->persist($real);
+        $this->em->flush();
+        $quotes = $this->em->getRepository(Quote::class)->count([]);
+
+        $tester = $this->tester();
+        $tester->execute(['--reset' => true]);
+
+        self::assertSame(1, $tester->getStatusCode());
+        self::assertStringContainsString('refusée', $tester->getDisplay());
+        self::assertSame(3, $this->em->getRepository(User::class)->count([]));
+        self::assertSame($quotes, $this->em->getRepository(Quote::class)->count([]));
+    }
+
     private function tester(): CommandTester
     {
         self::assertNotNull(static::$kernel);
