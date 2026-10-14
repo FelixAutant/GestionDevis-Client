@@ -5,6 +5,8 @@ services:
     name: gestiondevis
     runtime: docker
     plan: free
+    # Même région que la base Neon (aws-eu-central-1, Francfort) pour limiter la latence.
+    region: frankfurt
     healthCheckPath: /login
     envVars:
       - key: APP_ENV
