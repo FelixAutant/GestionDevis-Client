@@ -1,0 +1,11 @@
+parameters:
+    level: max
+    paths:
+        - src/
+        - tests/
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+        # Propriétés nullables tant que l'entité n'est pas validée (formulaires Symfony) : pattern assumé.
+        allowNullablePropertyForRequiredField: true

@@ -7,9 +7,9 @@ use App\Enum\QuoteStatus;
 use App\Repository\ClientRepository;
 use App\Repository\QuoteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class DashboardController extends AbstractController
 {

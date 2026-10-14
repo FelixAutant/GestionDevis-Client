@@ -23,5 +23,13 @@
 
         <button class="btn btn-primary btn-block" type="submit">Se connecter</button>
     </form>
+
+    {% if demo_mode %}
+        <form method="post" action="{{ path('app_demo_login') }}" class="demo-login">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('demo_login') }}">
+            <button class="btn btn-block" type="submit">Essayer la démo sans compte</button>
+            <p class="muted">Données fictives, remises à zéro régulièrement.</p>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

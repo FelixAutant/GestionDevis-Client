@@ -64,7 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        \assert(null !== $this->email && '' !== $this->email, 'Un utilisateur enregistré a toujours un e-mail.');
+
+        return $this->email;
     }
 
     /**

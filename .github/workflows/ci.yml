@@ -31,6 +31,12 @@ jobs:
           tools: composer:v2
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: composer audit
+      - name: Style de code (PHP-CS-Fixer)
+        run: vendor/bin/php-cs-fixer check --diff
+      - name: Analyse statique (PHPStan, niveau max)
+        run: |
+          APP_ENV=dev php bin/console cache:warmup
+          vendor/bin/phpstan analyse --no-progress
       - run: php bin/console lint:twig templates
       - run: php bin/console lint:yaml config
       - run: php bin/console lint:container

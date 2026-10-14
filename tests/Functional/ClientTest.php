@@ -2,9 +2,7 @@
 
 namespace App\Tests\Functional;
 
-use App\DataFixtures\AppFixtures;
 use App\Entity\Client;
-use App\Entity\User;
 
 final class ClientTest extends DatabaseWebTestCase
 {
@@ -104,7 +102,7 @@ final class ClientTest extends DatabaseWebTestCase
 
         self::assertSelectorTextContains('.flash-error', 'supprimez-les');
         $this->em->clear();
-        self::assertNotNull($this->findClient('Famille Lefèvre'));
+        $this->findClient('Famille Lefèvre'); // échoue si le client a été supprimé
     }
 
     private function findClient(string $name): Client

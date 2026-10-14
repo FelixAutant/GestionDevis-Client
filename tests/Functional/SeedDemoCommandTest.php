@@ -42,6 +42,7 @@ final class SeedDemoCommandTest extends DatabaseWebTestCase
 
     private function tester(): CommandTester
     {
+        self::assertNotNull(static::$kernel);
         $application = new Application(static::$kernel);
 
         return new CommandTester($application->find('app:demo:seed'));

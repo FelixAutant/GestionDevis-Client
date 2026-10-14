@@ -1,13 +1,27 @@
 # GestionDevis
 
+[![CI](https://github.com/FelixAutant/GestionDevis-Client/actions/workflows/ci.yml/badge.svg)](https://github.com/FelixAutant/GestionDevis-Client/actions/workflows/ci.yml)
+![PHP 8.3](https://img.shields.io/badge/PHP-8.3-777bb4?logo=php&logoColor=white)
+![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4%20LTS-000000?logo=symfony)
+![PHPStan niveau max](https://img.shields.io/badge/PHPStan-niveau%20max-2a5ea7)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
+[![Démo en ligne](https://img.shields.io/badge/d%C3%A9mo-en%20ligne-1d4ed8)](https://gestiondevis.onrender.com)
+
 Application web de gestion de **clients et de devis pour artisans** : création de devis avec calcul
 des montants et TVA, suivi des statuts, export PDF, comptes protégés.
 
 Projet personnel conçu pour démontrer la livraison d'une application complète :
 modélisation, sécurité, tests automatisés, intégration continue et documentation.
 
-**Démo en ligne** : <https://gestiondevis.onrender.com> — compte `demo@gestiondevis.test` / `demo-password`.
-Hébergement gratuit : le premier chargement après une période d'inactivité peut prendre 30 à 60 s.
+**Démo en ligne** : <https://gestiondevis.onrender.com> — bouton « Essayer la démo sans compte »
+(ou `demo@gestiondevis.test` / `demo-password`). Hébergement gratuit : le premier chargement après
+une période d'inactivité peut prendre 30 à 60 s.
+
+![Tableau de bord](docs/screenshots/tableau-de-bord.png)
+
+| Saisie d'un devis (totaux recalculés en direct) | Détail d'un devis (TVA ventilée par taux) |
+|---|---|
+| ![Nouveau devis](docs/screenshots/nouveau-devis.png) | ![Détail d'un devis](docs/screenshots/devis.png) |
 
 ## Fonctionnalités (V1)
 
@@ -29,7 +43,8 @@ Hébergement gratuit : le premier chargement après une période d'inactivité p
 | Vue | Twig, CSS maison, JS natif via AssetMapper (aucune chaîne de build Node) |
 | PDF | Dompdf |
 | Tests | PHPUnit 12 : unitaires + fonctionnels (WebTestCase) |
-| CI | GitHub Actions (lint, audit des dépendances, migrations, tests) |
+| Qualité | PHPStan niveau max (sans baseline), PHP-CS-Fixer (règles `@Symfony`) |
+| CI | GitHub Actions (style, analyse statique, lint, audit des dépendances, migrations, tests) |
 
 **Montants en entiers** : prix en centimes, quantités en centièmes, TVA en points de base. Aucun `float`
 dans les calculs, donc aucune dérive d'arrondi. La TVA est calculée **une fois par taux** sur la base HT
@@ -62,6 +77,13 @@ php bin/console doctrine:migrations:migrate --env=test --no-interaction
 php bin/phpunit
 ```
 
+Qualité du code (également vérifiée en CI) :
+
+```bash
+vendor/bin/php-cs-fixer check --diff   # style ; `fix` pour corriger
+vendor/bin/phpstan analyse              # analyse statique, niveau max
+```
+
 ## Structure
 
 ```
@@ -82,3 +104,7 @@ Voir [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md) : déploiement classique, et dé
 
 API REST (API Platform) · envoi du devis par e-mail · conversion devis → facture · remises ·
 catalogue de prestations · inscription avec confirmation d'e-mail.
+
+## Licence
+
+[MIT](LICENSE).

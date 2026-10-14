@@ -52,4 +52,30 @@ final class SecurityTest extends DatabaseWebTestCase
 
         self::assertResponseRedirects('/login');
     }
+
+    public function testDemoButtonLogsInAsTheDemoUser(): void
+    {
+        $this->client->request('GET', '/login');
+        $this->client->submitForm('Essayer la démo sans compte');
+
+        self::assertResponseRedirects('/');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('h1', 'Tableau de bord');
+    }
+
+    public function testDemoLoginRequiresAValidCsrfToken(): void
+    {
+        $this->client->request('POST', '/demo', ['_csrf_token' => 'invalide']);
+        $this->client->request('GET', '/');
+
+        self::assertResponseRedirects('/login');
+    }
+
+    public function testDemoLoginDoesNotWorkWithGet(): void
+    {
+        $this->client->request('GET', '/demo');
+        $this->client->request('GET', '/');
+
+        self::assertResponseRedirects('/login');
+    }
 }

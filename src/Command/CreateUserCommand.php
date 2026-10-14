@@ -6,11 +6,11 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -45,9 +45,13 @@ final class CreateUserCommand extends Command
             return Command::FAILURE;
         }
 
+        $email = $input->getArgument('email');
+        $company = $input->getArgument('company');
+        \assert(\is_string($email) && \is_string($company)); // arguments obligatoires
+
         $user = (new User())
-            ->setEmail($input->getArgument('email'))
-            ->setCompanyName($input->getArgument('company'))
+            ->setEmail($email)
+            ->setCompanyName($company)
             ->setRoles($input->getOption('admin') ? ['ROLE_ADMIN'] : []);
         $user->setPassword($this->hasher->hashPassword($user, $password));
 
