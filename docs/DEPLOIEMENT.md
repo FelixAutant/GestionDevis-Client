@@ -72,8 +72,9 @@ Démo en ligne : **<https://gestiondevis.onrender.com>** (compte de démo ci-des
 2. Renseigner `DATABASE_URL` avec la chaîne ci-dessus (console Neon → *Connect*, *Connection pooling*
    désactivé). `APP_SECRET` est généré automatiquement.
    Le premier build prend 5 à 10 min ; tant que le service n'est pas *Live*, Render répond 404 sur toutes les URL.
-3. Au démarrage, le conteneur applique les migrations puis, comme `DEMO_MODE=1`, charge les données de démo
-   **uniquement si la base ne contient aucun utilisateur** (`app:demo:seed`, aucune purge).
+3. Au démarrage, le conteneur applique les migrations puis, comme `DEMO_MODE=1`, **remet les données de démo
+   à zéro** (`app:demo:seed --reset`). La commande refuse de purger une base qui contient un compte autre que
+   ceux de la démo : un vrai compte créé par erreur sur cette base n'est jamais effacé.
 4. Compte de démo : `demo@gestiondevis.test` / `demo-password`.
 
 ### Ce qu'il faut savoir sur l'offre gratuite
@@ -81,7 +82,9 @@ Démo en ligne : **<https://gestiondevis.onrender.com>** (compte de démo ci-des
 - Render met l'application **en veille après ~15 min sans visite** : le premier chargement peut prendre
   30 à 60 s. Neon met aussi la base en veille (réveil ~1 s). À signaler à côté du lien dans le portfolio.
 - Une démo publique est modifiable par tous ses visiteurs : ne jamais y mettre de vraies données.
-  Pour repartir d'une base propre, vider les tables (ou recréer la base Neon) et redémarrer le service.
+  Elle repart de données propres à chaque démarrage du conteneur : déploiement, redémarrage manuel, ou réveil
+  après la mise en veille (au moins une fois par nuit faute de visites). Si un service de « réveil » empêche la
+  mise en veille, la remise à zéro n'a plus lieu d'elle-même : prévoir alors une tâche planifiée.
 - Le disque est éphémère : les sessions sont perdues à chaque redémarrage (reconnexion), sans autre conséquence.
 - `TRUSTED_PROXIES=REMOTE_ADDR` fait confiance aux en-têtes `X-Forwarded-*` de l'équipement qui précède
   l'application. C'est correct derrière le répartiteur de Render, mais ne l'activer **que** derrière un proxy.
