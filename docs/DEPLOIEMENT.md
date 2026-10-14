@@ -50,11 +50,10 @@ Le dépôt contient un `Dockerfile` (PHP 8.3 + Apache) et un blueprint `render.y
 hébergée chez [Neon](https://neon.com) (offre gratuite sans expiration), l'application chez
 [Render](https://render.com) (offre gratuite).
 
-> **Ce qui a été vérifié** : l'application en mode `prod` sans dépendances de dev (migrations, seed, connexion,
-> PDF, assets compilés, redirections https derrière un proxy), la configuration Apache sur l'image officielle
-> `php:8.3-apache` et la syntaxe du Dockerfile. **Ce qui ne l'a pas été** : le build complet de l'image et le
-> déploiement sur Render/Neon eux-mêmes (indisponibles depuis l'environnement de développement).
-> Les noms de menus des plateformes peuvent avoir changé.
+Démo en ligne : **<https://gestiondevis.onrender.com>** (compte de démo ci-dessous).
+
+> **Vérifié en conditions réelles** : build de l'image par Render, migrations et données de démo appliquées sur
+> Neon au démarrage, connexion au compte de démo. Les noms de menus des plateformes peuvent avoir changé.
 
 ### 1. Base de données (Neon)
 
@@ -69,8 +68,10 @@ hébergée chez [Neon](https://neon.com) (offre gratuite sans expiration), l'app
 
 ### 2. Application (Render)
 
-1. *New → Blueprint*, choisir le dépôt GitHub : Render lit `render.yaml`.
-2. Renseigner `DATABASE_URL` avec la chaîne ci-dessus. `APP_SECRET` est généré automatiquement.
+1. *New → Blueprint*, choisir le dépôt GitHub et la branche `main` : Render lit `render.yaml`.
+2. Renseigner `DATABASE_URL` avec la chaîne ci-dessus (console Neon → *Connect*, *Connection pooling*
+   désactivé). `APP_SECRET` est généré automatiquement.
+   Le premier build prend 5 à 10 min ; tant que le service n'est pas *Live*, Render répond 404 sur toutes les URL.
 3. Au démarrage, le conteneur applique les migrations puis, comme `DEMO_MODE=1`, charge les données de démo
    **uniquement si la base ne contient aucun utilisateur** (`app:demo:seed`, aucune purge).
 4. Compte de démo : `demo@gestiondevis.test` / `demo-password`.
