@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Devis {{ quote.number }}</title>
+    <style>
+        @page { margin: 28mm 18mm 22mm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; color: #1f2933; }
+        h1 { font-size: 20pt; margin: 0 0 2mm; color: #1d4ed8; }
+        .muted { color: #6b7280; }
+        .cols { width: 100%; margin-bottom: 10mm; }
+        .cols td { vertical-align: top; width: 50%; padding: 0; }
+        .box { border: 1px solid #d1d5db; padding: 3mm 4mm; }
+        .box strong { display: block; margin-bottom: 1mm; }
+        table.lines { width: 100%; border-collapse: collapse; margin-bottom: 6mm; }
+        table.lines th { background: #eff6ff; text-align: left; padding: 2mm; border-bottom: 1px solid #93c5fd; font-size: 9pt; }
+        table.lines td { padding: 2mm; border-bottom: 1px solid #e5e7eb; }
+        .num { text-align: right; white-space: nowrap; }
+        table.totals { width: 55%; margin-left: 45%; border-collapse: collapse; }
+        table.totals td { padding: 1.5mm 2mm; }
+        table.totals tr.grand td { border-top: 2px solid #1d4ed8; font-weight: bold; font-size: 11pt; }
+        .notes { margin-top: 10mm; }
+        .sign { margin-top: 12mm; border: 1px dashed #9ca3af; padding: 4mm; height: 22mm; }
+        .footer { position: fixed; bottom: -14mm; left: 0; right: 0; text-align: center; font-size: 8pt; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="footer">
+        {{ quote.owner.companyName }}{% if quote.owner.siret %} · SIRET {{ quote.owner.siret }}{% endif %}
+    </div>
+
+    <table class="cols">
+        <tr>
+            <td>
+                <h1>DEVIS</h1>
+                <div><strong>N° {{ quote.number }}</strong></div>
+                <div class="muted">Date : {{ quote.issueDate|date('d/m/Y') }}</div>
+                <div class="muted">Valable jusqu'au : {{ quote.validUntil|date('d/m/Y') }}</div>
+            </td>
+            <td>
+                <div class="box">
+                    <strong>{{ quote.owner.companyName }}</strong>
+                    {% if quote.owner.address %}{{ quote.owner.address|nl2br }}<br>{% endif %}
+                    {% if quote.owner.phone %}Tél. {{ quote.owner.phone }}<br>{% endif %}
+                    {{ quote.owner.email }}
+                    {% if quote.owner.siret %}<br>SIRET {{ quote.owner.siret }}{% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="cols">
+        <tr>
+            <td></td>
+            <td>
+                <div class="box">
+                    <strong>{{ quote.client.name }}</strong>
+                    {% if quote.client.fullAddress %}{{ quote.client.fullAddress }}<br>{% endif %}
+                    {% if quote.client.email %}{{ quote.client.email }}{% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    {% if quote.title %}<p><strong>Objet :</strong> {{ quote.title }}</p>{% endif %}
+
+    <table class="lines">
+        <thead>
+            <tr><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th><th class="num">TVA</th><th class="num">Total HT</th></tr>
+        </thead>
+        <tbody>
+        {% for line in quote.lines %}
+            <tr>
+                <td>{{ line.description }}</td>
+                <td class="num">{{ line.quantity|quantity }} {{ line.unit }}</td>
+                <td class="num">{{ line.unitPrice|money }}</td>
+                <td class="num">{{ line.vatRate|vat_rate }}</td>
+                <td class="num">{{ line.totalExcludingTax|money }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals">
+        <tr><td>Total HT</td><td class="num">{{ totals.totalExcludingTax|money }}</td></tr>
+        {% for rate, row in totals.vatBreakdown %}
+            <tr><td>TVA {{ rate|vat_rate }}</td><td class="num">{{ row.vat|money }}</td></tr>
+        {% endfor %}
+        <tr class="grand"><td>Total TTC</td><td class="num">{{ totals.totalIncludingTax|money }}</td></tr>
+    </table>
+
+    {% if quote.notes %}
+        <div class="notes"><strong>Conditions / remarques</strong><br>{{ quote.notes|nl2br }}</div>
+    {% endif %}
+
+    <div class="sign">
+        Bon pour accord — date et signature du client :
+    </div>
+</body>
+</html>

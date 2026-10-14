@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>Devis</h1>
+    <a class="btn btn-primary" href="{{ path('app_quote_new') }}">+ Nouveau devis</a>
+</div>
+
+<form class="search" method="get" role="search">
+    <input type="search" name="q" value="{{ term }}" placeholder="Rechercher (n°, client, objet)…" aria-label="Rechercher un devis">
+    <select name="status" aria-label="Filtrer par statut">
+        <option value="">Tous les statuts</option>
+        {% for s in statuses %}
+            <option value="{{ s.value }}" {{ status == s ? 'selected' }}>{{ s.label }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn" type="submit">Filtrer</button>
+</form>
+
+<section class="card">
+    {% if quotes is empty %}
+        <p class="muted">Aucun devis ne correspond.</p>
+    {% else %}
+        <div class="table-wrap">
+        <table>
+            <thead><tr><th>N°</th><th>Client</th><th>Objet</th><th>Date</th><th>Statut</th><th class="num">Total TTC</th></tr></thead>
+            <tbody>
+            {% for quote in quotes %}
+                <tr>
+                    <td><a href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
+                    <td>{{ quote.client.name }}</td>
+                    <td>{{ quote.title }}</td>
+                    <td>{{ quote.issueDate|date('d/m/Y') }}</td>
+                    <td>{% include '_status_badge.html.twig' %}</td>
+                    <td class="num">{{ quote.totals.totalIncludingTax|money }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
