@@ -5,6 +5,11 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    # Derrière le répartiteur de charge d'un hébergeur (HTTPS terminé en amont), il faut faire confiance
+    # aux en-têtes X-Forwarded-* pour générer des URLs en https. Valeur par défaut : aucun proxy.
+    trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
     #esi: true
     #fragments: true
 
