@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis {{ quote.number }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>Devis {{ quote.number }} {% include '_status_badge.html.twig' %}</h1>
+    <div class="actions">
+        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id}) }}" target="_blank" rel="noopener">Aperçu PDF</a>
+        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id, download: 1}) }}">Télécharger</a>
+        {% if quote.editable %}
+            <a class="btn" href="{{ path('app_quote_edit', {id: quote.id}) }}">Modifier</a>
+        {% endif %}
+    </div>
+</div>
+
+<section class="card">
+    <dl class="details">
+        <dt>Client</dt><dd><a href="{{ path('app_client_show', {id: quote.client.id}) }}">{{ quote.client.name }}</a></dd>
+        {% if quote.title %}<dt>Objet</dt><dd>{{ quote.title }}</dd>{% endif %}
+        <dt>Date</dt><dd>{{ quote.issueDate|date('d/m/Y') }}</dd>
+        <dt>Valable jusqu'au</dt><dd>{{ quote.validUntil|date('d/m/Y') }}</dd>
+    </dl>
+</section>
+
+<section class="card">
+    <h2>Lignes</h2>
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th><th class="num">TVA</th><th class="num">Total HT</th></tr></thead>
+        <tbody>
+        {% for line in quote.lines %}
+            <tr>
+                <td>{{ line.description }}</td>
+                <td class="num">{{ line.quantity|quantity }} {{ line.unit }}</td>
+                <td class="num">{{ line.unitPrice|money }}</td>
+                <td class="num">{{ line.vatRate|vat_rate }}</td>
+                <td class="num">{{ line.totalExcludingTax|money }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <dl class="totals">
+        <dt>Total HT</dt><dd>{{ totals.totalExcludingTax|money }}</dd>
+        {% for rate, row in totals.vatBreakdown %}
+            <dt>TVA {{ rate|vat_rate }} <small>(base {{ row.base|money }})</small></dt><dd>{{ row.vat|money }}</dd>
+        {% endfor %}
+        <dt>Total TTC</dt><dd><strong>{{ totals.totalIncludingTax|money }}</strong></dd>
+    </dl>
+</section>
+
+{% if quote.notes %}
+<section class="card">
+    <h2>Conditions / remarques</h2>
+    <p class="pre">{{ quote.notes }}</p>
+</section>
+{% endif %}
+
+<section class="card">
+    <h2>Suivi</h2>
+    <div class="actions">
+        {% for target in quote.status.allowedTransitions %}
+            <form method="post" action="{{ path('app_quote_status', {id: quote.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('status_quote_' ~ quote.id) }}">
+                <input type="hidden" name="status" value="{{ target.value }}">
+                <button class="btn {{ target.value == 'accepted' ? 'btn-primary' }}" type="submit">Marquer « {{ target.label }} »</button>
+            </form>
+        {% else %}
+            <span class="muted">Statut final : aucun changement possible.</span>
+        {% endfor %}
+
+        {% if quote.editable %}
+            <form method="post" action="{{ path('app_quote_delete', {id: quote.id}) }}" onsubmit="return confirm('Supprimer ce devis ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_quote_' ~ quote.id) }}">
+                <button class="btn btn-danger" type="submit">Supprimer</button>
+            </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

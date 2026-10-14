@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ client.name }}{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>{{ client.name }}</h1>
+    <div class="actions">
+        <a class="btn btn-primary" href="{{ path('app_quote_new', {client: client.id}) }}">+ Devis</a>
+        <a class="btn" href="{{ path('app_client_edit', {id: client.id}) }}">Modifier</a>
+        <form method="post" action="{{ path('app_client_delete', {id: client.id}) }}" onsubmit="return confirm('Supprimer ce client ?')">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_client_' ~ client.id) }}">
+            <button class="btn btn-danger" type="submit">Supprimer</button>
+        </form>
+    </div>
+</div>
+
+<section class="card">
+    <dl class="details">
+        <dt>E-mail</dt><dd>{{ client.email ?: '—' }}</dd>
+        <dt>Téléphone</dt><dd>{{ client.phone ?: '—' }}</dd>
+        <dt>Adresse</dt><dd>{{ client.fullAddress ?: '—' }}</dd>
+        {% if client.notes %}<dt>Notes</dt><dd class="pre">{{ client.notes }}</dd>{% endif %}
+    </dl>
+</section>
+
+<section class="card">
+    <h2>Devis</h2>
+    {% if client.quotes is empty %}
+        <p class="muted">Aucun devis pour ce client.</p>
+    {% else %}
+        <div class="table-wrap">
+        <table>
+            <thead><tr><th>N°</th><th>Date</th><th>Statut</th><th class="num">Total TTC</th></tr></thead>
+            <tbody>
+            {% for quote in client.quotes %}
+                <tr>
+                    <td><a href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
+                    <td>{{ quote.issueDate|date('d/m/Y') }}</td>
+                    <td>{% include '_status_badge.html.twig' %}</td>
+                    <td class="num">{{ quote.totals.totalIncludingTax|money }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

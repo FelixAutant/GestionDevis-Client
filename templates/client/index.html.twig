@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>Clients</h1>
+    <a class="btn btn-primary" href="{{ path('app_client_new') }}">+ Nouveau client</a>
+</div>
+
+<form class="search" method="get" role="search">
+    <input type="search" name="q" value="{{ term }}" placeholder="Rechercher (nom, e-mail, ville)…" aria-label="Rechercher un client">
+    <button class="btn" type="submit">Rechercher</button>
+</form>
+
+<section class="card">
+    {% if clients is empty %}
+        <p class="muted">{{ term ? 'Aucun client ne correspond à la recherche.' : 'Aucun client pour l\'instant.' }}</p>
+    {% else %}
+        <div class="table-wrap">
+        <table>
+            <thead><tr><th>Nom</th><th>E-mail</th><th>Téléphone</th><th>Ville</th></tr></thead>
+            <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td><a href="{{ path('app_client_show', {id: client.id}) }}">{{ client.name }}</a></td>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.city }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

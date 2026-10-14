@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}GestionDevis{% endblock %} · GestionDevis</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧾</text></svg>">
+    {% block javascripts %}{{ importmap('app') }}{% endblock %}
+</head>
+<body>
+    {% if is_granted('ROLE_USER') %}
+        <header class="topbar">
+            <a class="brand" href="{{ path('app_dashboard') }}">🧾 GestionDevis</a>
+            <nav aria-label="Navigation principale">
+                <a href="{{ path('app_dashboard') }}" {% if app.request.attributes.get('_route') == 'app_dashboard' %}aria-current="page"{% endif %}>Tableau de bord</a>
+                <a href="{{ path('app_client_index') }}" {% if app.request.attributes.get('_route') starts with 'app_client' %}aria-current="page"{% endif %}>Clients</a>
+                <a href="{{ path('app_quote_index') }}" {% if app.request.attributes.get('_route') starts with 'app_quote' %}aria-current="page"{% endif %}>Devis</a>
+            </nav>
+            <div class="user">
+                <span>{{ app.user.companyName }}</span>
+                <a href="{{ path('app_logout') }}">Déconnexion</a>
+            </div>
+        </header>
+    {% endif %}
+
+    <main class="container">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ type }}" role="status">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+    </main>
+</body>
+</html>

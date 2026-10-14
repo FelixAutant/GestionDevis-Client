@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div class="page-head"><h1>{{ title }}</h1></div>
+
+{{ form_start(form, {attr: {'data-quote-form': ''}}) }}
+    <section class="card">
+        <div class="grid-2">
+            {{ form_row(form.client) }}
+            {{ form_row(form.title) }}
+        </div>
+        <div class="grid-2">
+            {{ form_row(form.issueDate) }}
+            {{ form_row(form.validUntil) }}
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Lignes</h2>
+        {{ form_errors(form.lines) }}
+
+        <div class="lines-head" aria-hidden="true">
+            <span>Désignation</span><span>Qté</span><span>Unité</span><span>PU HT</span><span>TVA</span><span>Total HT</span><span></span>
+        </div>
+        <div class="lines"
+             data-lines
+             data-index="{{ form.lines|length }}"
+             data-prototype="{{ _self.line(form.lines.vars.prototype)|e('html_attr') }}">
+            {% for line in form.lines %}
+                {{ _self.line(line) }}
+            {% endfor %}
+        </div>
+        <button type="button" class="btn" data-add-line>+ Ajouter une ligne</button>
+
+        <dl class="totals" data-totals>
+            <dt>Total HT</dt><dd data-total-ht>0,00 €</dd>
+            <dt>TVA</dt><dd data-total-vat>0,00 €</dd>
+            <dt>Total TTC</dt><dd data-total-ttc><strong>0,00 €</strong></dd>
+        </dl>
+    </section>
+
+    <section class="card">
+        {{ form_row(form.notes) }}
+        <div class="actions">
+            <button class="btn btn-primary" type="submit">Enregistrer</button>
+            <a class="btn" href="{{ quote.id ? path('app_quote_show', {id: quote.id}) : path('app_quote_index') }}">Annuler</a>
+        </div>
+    </section>
+{{ form_end(form) }}
+{% endblock %}
+
+{% macro line(line) %}
+    <div class="line" data-line-row>
+        <div class="f-desc">{{ form_label(line.description) }}{{ form_widget(line.description, {attr: {placeholder: 'Désignation'}}) }}{{ form_errors(line.description) }}</div>
+        <div class="f-qty">{{ form_label(line.quantity) }}{{ form_widget(line.quantity) }}{{ form_errors(line.quantity) }}</div>
+        <div class="f-unit">{{ form_label(line.unit) }}{{ form_widget(line.unit) }}</div>
+        <div class="f-price">{{ form_label(line.unitPrice) }}{{ form_widget(line.unitPrice) }}{{ form_errors(line.unitPrice) }}</div>
+        <div class="f-vat">{{ form_label(line.vatRate) }}{{ form_widget(line.vatRate) }}</div>
+        <div class="f-total" data-line-total>0,00 €</div>
+        <button type="button" class="btn btn-icon" data-remove-line aria-label="Supprimer la ligne">✕</button>
+        {{ form_rest(line) }}
+    </div>
+{% endmacro %}

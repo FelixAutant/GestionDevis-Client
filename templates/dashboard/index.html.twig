@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <h1>Tableau de bord</h1>
+    <div class="actions">
+        <a class="btn" href="{{ path('app_client_new') }}">+ Client</a>
+        <a class="btn btn-primary" href="{{ path('app_quote_new') }}">+ Devis</a>
+    </div>
+</div>
+
+<section class="stats">
+    <a class="card stat" href="{{ path('app_client_index') }}">
+        <span class="stat-value">{{ client_count }}</span>
+        <span class="stat-label">Clients</span>
+    </a>
+    {% for status in statuses %}
+        <a class="card stat" href="{{ path('app_quote_index', {status: status.value}) }}">
+            <span class="stat-value">{{ counts[status.value]|default(0) }}</span>
+            <span class="stat-label">Devis {{ status.label|lower }}{{ (counts[status.value]|default(0)) > 1 ? 's' : '' }}</span>
+        </a>
+    {% endfor %}
+</section>
+
+<section class="card">
+    <h2>Derniers devis</h2>
+    {% if recent is empty %}
+        <p class="muted">Aucun devis pour l'instant. <a href="{{ path('app_quote_new') }}">Créez votre premier devis</a>.</p>
+    {% else %}
+        <div class="table-wrap">
+        <table>
+            <thead><tr><th>N°</th><th>Client</th><th>Date</th><th>Statut</th><th class="num">Total TTC</th></tr></thead>
+            <tbody>
+            {% for quote in recent %}
+                <tr>
+                    <td><a href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
+                    <td>{{ quote.client.name }}</td>
+                    <td>{{ quote.issueDate|date('d/m/Y') }}</td>
+                    <td>{% include '_status_badge.html.twig' %}</td>
+                    <td class="num">{{ quote.totals.totalIncludingTax|money }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,5 @@
+# Jetons CSRF classiques (liés à la session) : fonctionnent sans JavaScript
+# et dans les tests fonctionnels. Le mode « stateless » de Symfony 7.2+ suppose
+# un script côté client qui n'est pas utilisé ici.
+framework:
+    csrf_protection: true
