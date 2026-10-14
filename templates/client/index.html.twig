@@ -18,15 +18,15 @@
         <p class="muted">{{ term ? 'Aucun client ne correspond à la recherche.' : 'Aucun client pour l\'instant.' }}</p>
     {% else %}
         <div class="table-wrap">
-        <table>
+        <table class="table-stack">
             <thead><tr><th>Nom</th><th>E-mail</th><th>Téléphone</th><th>Ville</th></tr></thead>
             <tbody>
             {% for client in clients %}
                 <tr>
                     <td><a href="{{ path('app_client_show', {id: client.id}) }}">{{ client.name }}</a></td>
-                    <td>{{ client.email }}</td>
-                    <td>{{ client.phone }}</td>
-                    <td>{{ client.city }}</td>
+                    <td data-label="E-mail">{{ client.email }}</td>
+                    <td data-label="Téléphone">{{ client.phone }}</td>
+                    <td data-label="Ville">{{ client.city }}</td>
                 </tr>
             {% endfor %}
             </tbody>
