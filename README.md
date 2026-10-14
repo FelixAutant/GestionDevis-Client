@@ -6,6 +6,9 @@ des montants et TVA, suivi des statuts, export PDF, comptes protégés.
 Projet personnel conçu pour démontrer la livraison d'une application complète :
 modélisation, sécurité, tests automatisés, intégration continue et documentation.
 
+**Démo en ligne** : <https://gestiondevis.onrender.com> — compte `demo@gestiondevis.test` / `demo-password`.
+Hébergement gratuit : le premier chargement après une période d'inactivité peut prendre 30 à 60 s.
+
 ## Fonctionnalités (V1)
 
 - **Authentification** par e-mail / mot de passe, comptes créés en console (pas d'inscription publique)
