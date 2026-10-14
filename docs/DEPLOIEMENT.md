@@ -58,11 +58,13 @@ hébergée chez [Neon](https://neon.com) (offre gratuite sans expiration), l'app
 
 ### 1. Base de données (Neon)
 
-1. Créer un projet Neon (région proche de celle de Render) et copier la chaîne de connexion.
-2. L'adapter au format Doctrine en ajoutant `serverVersion` et `charset` (et en gardant `sslmode=require`) :
+1. Créer un projet Neon dans la même région que Render (`render.yaml` cible `frankfurt` : choisir
+   *AWS Europe Central 1 (Frankfurt)* côté Neon) et copier la chaîne de connexion.
+2. L'adapter au format Doctrine en ajoutant `serverVersion` (la version PostgreSQL du projet Neon, 18 par défaut
+   aujourd'hui) et `charset` (en gardant `sslmode=require`) :
 
    ```
-   postgresql://UTILISATEUR:MOTDEPASSE@ep-xxx.region.aws.neon.tech/neondb?sslmode=require&serverVersion=16&charset=utf8
+   postgresql://UTILISATEUR:MOTDEPASSE@ep-xxx.region.aws.neon.tech/neondb?sslmode=require&serverVersion=18&charset=utf8
    ```
 
 ### 2. Application (Render)
