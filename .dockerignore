@@ -1,0 +1,14 @@
+.git
+.github
+.env.local
+.env.*.local
+.phpunit.cache
+var
+vendor
+node_modules
+tests
+docs
+compose*.yaml
+Dockerfile
+.dockerignore
+public/assets

@@ -1,0 +1,20 @@
+# Blueprint Render (offre gratuite). La base PostgreSQL est externe (ex. Neon) : DATABASE_URL est à renseigner
+# dans le tableau de bord Render, jamais dans ce fichier.
+services:
+  - type: web
+    name: gestiondevis
+    runtime: docker
+    plan: free
+    healthCheckPath: /login
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      # Le HTTPS est terminé par le répartiteur de Render : on fait confiance à ses en-têtes X-Forwarded-*.
+      - key: TRUSTED_PROXIES
+        value: REMOTE_ADDR
+      - key: DEMO_MODE
+        value: "1"

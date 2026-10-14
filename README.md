@@ -73,7 +73,7 @@ tests/Functional/  authentification, permissions, clients, devis, PDF
 
 ## Déploiement
 
-Voir [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md).
+Voir [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md) : déploiement classique, et démo gratuite via Docker + Render + Neon.
 
 ## Pistes pour la suite
 
