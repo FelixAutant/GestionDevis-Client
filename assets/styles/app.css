@@ -140,6 +140,10 @@ th { font-size: .82rem; text-transform: uppercase; letter-spacing: .03em; color:
 /* Connexion */
 .auth-card { max-width: 380px; margin: 8vh auto 0; }
 .auth-card h1 { margin-bottom: 4px; }
+.error-page { max-width: 480px; margin: 8vh auto 0; text-align: center; }
+.error-code { margin: 0; font-size: 3rem; font-weight: 700; color: var(--primary); }
+.demo-login { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; }
+.demo-login p { margin: 8px 0 0; font-size: .875rem; }
 
 /* Mobile : les lignes passent en cartes empilées */
 @media (max-width: 720px) {

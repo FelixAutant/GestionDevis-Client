@@ -13,11 +13,11 @@ use App\Service\QuoteNumberGenerator;
 use App\Service\QuotePdfGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/devis')]
@@ -57,7 +57,8 @@ final class QuoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $quote->setNumber($numbers->next($user, $quote->getIssueDate()));
+            $issueDate = $quote->getIssueDate() ?? throw new \LogicException('Date du devis garantie par la validation.');
+            $quote->setNumber($numbers->next($user, $issueDate));
             $em->persist($quote);
             $em->flush();
             $this->addFlash('success', \sprintf('Devis %s créé.', $quote->getNumber()));

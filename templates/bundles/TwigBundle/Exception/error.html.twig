@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% set messages = {
+    403: ['Accès refusé', 'Cette page ne fait pas partie de votre espace.'],
+    404: ['Page introuvable', 'Le lien est peut-être erroné, ou le document a été supprimé.'],
+} %}
+{% set message = messages[status_code] ?? ['Une erreur est survenue', 'Le problème vient de notre côté. Réessayez dans quelques instants.'] %}
+
+{% block title %}{{ message[0] }}{% endblock %}
+
+{% block body %}
+<div class="error-page card">
+    <p class="error-code">{{ status_code }}</p>
+    <h1>{{ message[0] }}</h1>
+    <p class="muted">{{ message[1] }}</p>
+    <a class="btn btn-primary" href="{{ path('app_dashboard') }}">Retour au tableau de bord</a>
+</div>
+{% endblock %}

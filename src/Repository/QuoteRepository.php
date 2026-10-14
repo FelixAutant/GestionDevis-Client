@@ -63,6 +63,7 @@ class QuoteRepository extends ServiceEntityRepository
      */
     public function countByStatus(User $owner): array
     {
+        /** @var list<array{status: QuoteStatus|string, total: int|string}> $rows */
         $rows = $this->createQueryBuilder('q')
             ->select('q.status AS status, COUNT(q.id) AS total')
             ->andWhere('q.owner = :owner')
@@ -74,7 +75,7 @@ class QuoteRepository extends ServiceEntityRepository
         $counts = [];
         foreach ($rows as $row) {
             $status = $row['status'];
-            $counts[$status instanceof QuoteStatus ? $status->value : (string) $status] = (int) $row['total'];
+            $counts[$status instanceof QuoteStatus ? $status->value : $status] = (int) $row['total'];
         }
 
         return $counts;
@@ -83,6 +84,7 @@ class QuoteRepository extends ServiceEntityRepository
     /** Dernier numéro utilisé pour un préfixe donné (ex. « DV-2026- »), null s'il n'y en a pas. */
     public function findLastNumber(User $owner, string $prefix): ?string
     {
+        /** @var array{number: string}|null $result */
         $result = $this->createQueryBuilder('q')
             ->select('q.number')
             ->andWhere('q.owner = :owner')

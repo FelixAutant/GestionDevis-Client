@@ -4,6 +4,7 @@ namespace App\Tests\Functional;
 
 use App\Entity\Client;
 use App\Entity\Quote;
+use App\Entity\QuoteLine;
 use App\Enum\QuoteStatus;
 
 final class QuoteTest extends DatabaseWebTestCase
@@ -59,9 +60,11 @@ final class QuoteTest extends DatabaseWebTestCase
         self::assertSame(21505, $totals->totalVat);
         self::assertSame(136555, $totals->totalIncludingTax);
         self::assertCount(2, $quote->getLines());
-        self::assertSame('Parquet chêne', $quote->getLines()[0]->getDescription());
-        self::assertSame(1250, $quote->getLines()[0]->getQuantity());
-        self::assertSame(8000, $quote->getLines()[0]->getUnitPrice());
+        $line = $quote->getLines()[0];
+        self::assertInstanceOf(QuoteLine::class, $line);
+        self::assertSame('Parquet chêne', $line->getDescription());
+        self::assertSame(1250, $line->getQuantity());
+        self::assertSame(8000, $line->getUnitPrice());
     }
 
     public function testQuoteNeedsAtLeastOneLine(): void
