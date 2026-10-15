@@ -1,35 +1,52 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-<div class="auth-card card">
-    <h1>🧾 GestionDevis</h1>
-    <p class="muted">Devis et clients pour artisans.</p>
+<div class="auth">
+    <section class="auth-pitch">
+        <p class="brand">
+            <span class="brand-mark">{{ ui.icon('logo', 18) }}</span>
+            GestionDevis
+        </p>
+        <h1>Des devis justes, envoyés plus vite.</h1>
+        <ul class="auth-points">
+            <li>{{ ui.icon('check', 18) }} Totaux HT, TVA par taux et TTC calculés pendant la saisie</li>
+            <li>{{ ui.icon('check', 18) }} Numérotation automatique et suivi jusqu'à la signature</li>
+            <li>{{ ui.icon('check', 18) }} Devis en PDF, prêts à envoyer</li>
+        </ul>
+    </section>
 
-    {% if error %}
-        <div class="flash flash-error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <section class="auth-card card">
+        <h2>Connexion</h2>
+        <p class="muted">Devis et clients pour artisans.</p>
 
-    <form method="post">
-        <label for="username">E-mail</label>
-        <input type="email" id="username" name="_username" value="{{ last_username }}" autocomplete="email" required autofocus>
+        {% if error %}
+            <div class="flash flash-error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="_password" autocomplete="current-password" required>
+        {% if demo_mode %}
+            <form method="post" action="{{ path('app_demo_login') }}" class="demo-login">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('demo_login') }}">
+                <button class="btn btn-primary btn-block btn-lg" type="submit">{{ ui.icon('play', 16) }} Essayer la démo sans compte</button>
+                <p class="muted">Données fictives, remises à zéro régulièrement.</p>
+            </form>
+            <p class="divider"><span>ou avec votre compte</span></p>
+        {% endif %}
 
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <label class="inline"><input type="checkbox" name="_remember_me"> Rester connecté</label>
+        <form method="post">
+            <label for="username">E-mail</label>
+            <input type="email" id="username" name="_username" value="{{ last_username }}" autocomplete="email" required {{ demo_mode ? '' : 'autofocus' }}>
 
-        <button class="btn btn-primary btn-block" type="submit">Se connecter</button>
-    </form>
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="_password" autocomplete="current-password" required>
 
-    {% if demo_mode %}
-        <form method="post" action="{{ path('app_demo_login') }}" class="demo-login">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('demo_login') }}">
-            <button class="btn btn-block" type="submit">Essayer la démo sans compte</button>
-            <p class="muted">Données fictives, remises à zéro régulièrement.</p>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <label class="inline"><input type="checkbox" name="_remember_me"> Rester connecté</label>
+
+            <button class="btn {{ demo_mode ? '' : 'btn-primary' }} btn-block" type="submit">Se connecter</button>
         </form>
-    {% endif %}
+    </section>
 </div>
 {% endblock %}

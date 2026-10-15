@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}Clients{% endblock %}
 
 {% block body %}
 <div class="page-head">
     <h1>Clients</h1>
-    <a class="btn btn-primary" href="{{ path('app_client_new') }}">+ Nouveau client</a>
+    <a class="btn btn-primary" href="{{ path('app_client_new') }}">{{ ui.icon('plus', 16) }} Nouveau client</a>
 </div>
 
 <form class="search" method="get" role="search">
+    <span class="search-icon">{{ ui.icon('search', 18) }}</span>
     <input type="search" name="q" value="{{ term }}" placeholder="Rechercher (nom, e-mail, ville)…" aria-label="Rechercher un client">
     <button class="btn" type="submit">Rechercher</button>
 </form>

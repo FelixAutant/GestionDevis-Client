@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}{{ client.name }}{% endblock %}
 
@@ -6,8 +7,8 @@
 <div class="page-head">
     <h1>{{ client.name }}</h1>
     <div class="actions">
-        <a class="btn btn-primary" href="{{ path('app_quote_new', {client: client.id}) }}">+ Devis</a>
-        <a class="btn" href="{{ path('app_client_edit', {id: client.id}) }}">Modifier</a>
+        <a class="btn btn-primary" href="{{ path('app_quote_new', {client: client.id}) }}">{{ ui.icon('plus', 16) }} Devis</a>
+        <a class="btn" href="{{ path('app_client_edit', {id: client.id}) }}">{{ ui.icon('edit', 16) }} Modifier</a>
         <form method="post" action="{{ path('app_client_delete', {id: client.id}) }}" onsubmit="return confirm('Supprimer ce client ?')">
             <input type="hidden" name="_token" value="{{ csrf_token('delete_client_' ~ client.id) }}">
             <button class="btn btn-danger" type="submit">Supprimer</button>

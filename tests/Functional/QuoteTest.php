@@ -211,8 +211,9 @@ final class QuoteTest extends DatabaseWebTestCase
         $crawler = $this->client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
-        self::assertCount(1 + \count(QuoteStatus::cases()), $crawler->filter('.stat'), 'Un bloc « clients » + un par statut.');
-        self::assertStringContainsString('3', $crawler->filter('.stat')->first()->text(), 'La démo a 3 clients.');
+        $legend = $crawler->filter('.pipeline-legend li');
+        self::assertCount(\count(QuoteStatus::cases()), $legend, 'Un compteur par statut.');
+        self::assertSame(['1', '1', '1', '1'], $legend->filter('.stat-value')->each(static fn ($node): string => $node->text()), 'La démo a un devis par statut.');
     }
 
     /** Texte d'un bloc, avec toutes les variantes d'espaces (insécables, fines) ramenées à une espace simple. */

@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}Devis{% endblock %}
 
 {% block body %}
 <div class="page-head">
     <h1>Devis</h1>
-    <a class="btn btn-primary" href="{{ path('app_quote_new') }}">+ Nouveau devis</a>
+    <a class="btn btn-primary" href="{{ path('app_quote_new') }}">{{ ui.icon('plus', 16) }} Nouveau devis</a>
 </div>
 
 <form class="search" method="get" role="search">
+    <span class="search-icon">{{ ui.icon('search', 18) }}</span>
     <input type="search" name="q" value="{{ term }}" placeholder="Rechercher (n°, client, objet)…" aria-label="Rechercher un devis">
     <select name="status" aria-label="Filtrer par statut">
         <option value="">Tous les statuts</option>
