@@ -30,15 +30,15 @@
         <p class="muted">Aucun devis pour ce client.</p>
     {% else %}
         <div class="table-wrap">
-        <table>
+        <table class="table-stack">
             <thead><tr><th>N°</th><th>Date</th><th>Statut</th><th class="num">Total TTC</th></tr></thead>
             <tbody>
             {% for quote in client.quotes %}
                 <tr>
                     <td><a href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
-                    <td>{{ quote.issueDate|date('d/m/Y') }}</td>
-                    <td>{% include '_status_badge.html.twig' %}</td>
-                    <td class="num">{{ quote.totals.totalIncludingTax|money }}</td>
+                    <td data-label="Date">{{ quote.issueDate|date('d/m/Y') }}</td>
+                    <td data-label="Statut">{% include '_status_badge.html.twig' %}</td>
+                    <td data-label="Total TTC" class="num">{{ quote.totals.totalIncludingTax|money }}</td>
                 </tr>
             {% endfor %}
             </tbody>

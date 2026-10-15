@@ -26,16 +26,16 @@
 <section class="card">
     <h2>Lignes</h2>
     <div class="table-wrap">
-    <table>
+    <table class="table-stack">
         <thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th><th class="num">TVA</th><th class="num">Total HT</th></tr></thead>
         <tbody>
         {% for line in quote.lines %}
             <tr>
                 <td>{{ line.description }}</td>
-                <td class="num">{{ line.quantity|quantity }} {{ line.unit }}</td>
-                <td class="num">{{ line.unitPrice|money }}</td>
-                <td class="num">{{ line.vatRate|vat_rate }}</td>
-                <td class="num">{{ line.totalExcludingTax|money }}</td>
+                <td data-label="Qté" class="num">{{ line.quantity|quantity }} {{ line.unit }}</td>
+                <td data-label="PU HT" class="num">{{ line.unitPrice|money }}</td>
+                <td data-label="TVA" class="num">{{ line.vatRate|vat_rate }}</td>
+                <td data-label="Total HT" class="num">{{ line.totalExcludingTax|money }}</td>
             </tr>
         {% endfor %}
         </tbody>
