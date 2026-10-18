@@ -1,2 +1,2 @@
-<span class="badge badge-{{ quote.status.value }}">{{ quote.status.label }}</span>
-{%- if quote.expired %} <span class="badge badge-expired">Expiré</span>{% endif -%}
+<span class="badge badge-{{ quote.status.value }}"><span class="dot status-{{ quote.status.value }}"></span>{{ quote.status.label }}</span>
+{%- if quote.expired %} <span class="badge badge-expired"><span class="dot status-rejected"></span>Expiré</span>{% endif -%}

@@ -1,15 +1,19 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}Devis {{ quote.number }}{% endblock %}
 
 {% block body %}
 <div class="page-head">
-    <h1>Devis {{ quote.number }} {% include '_status_badge.html.twig' %}</h1>
+    <div>
+        <p class="eyebrow"><a href="{{ path('app_quote_index') }}">Devis</a> / {{ quote.client.name }}</p>
+        <h1>Devis <span class="doc-number">{{ quote.number }}</span> {% include '_status_badge.html.twig' %}</h1>
+    </div>
     <div class="actions">
-        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id}) }}" target="_blank" rel="noopener">Aperçu PDF</a>
-        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id, download: 1}) }}">Télécharger</a>
+        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id}) }}" target="_blank" rel="noopener">{{ ui.icon('eye', 16) }} Aperçu PDF</a>
+        <a class="btn" href="{{ path('app_quote_pdf', {id: quote.id, download: 1}) }}">{{ ui.icon('download', 16) }} Télécharger</a>
         {% if quote.editable %}
-            <a class="btn" href="{{ path('app_quote_edit', {id: quote.id}) }}">Modifier</a>
+            <a class="btn btn-primary" href="{{ path('app_quote_edit', {id: quote.id}) }}">{{ ui.icon('edit', 16) }} Modifier</a>
         {% endif %}
     </div>
 </div>
@@ -47,7 +51,7 @@
         {% for rate, row in totals.vatBreakdown %}
             <dt>TVA {{ rate|vat_rate }} <small>(base {{ row.base|money }})</small></dt><dd>{{ row.vat|money }}</dd>
         {% endfor %}
-        <dt>Total TTC</dt><dd><strong>{{ totals.totalIncludingTax|money }}</strong></dd>
+        <dt class="grand">Total TTC</dt><dd class="grand"><strong>{{ totals.totalIncludingTax|money }}</strong></dd>
     </dl>
 </section>
 

@@ -1,36 +1,51 @@
+{% import '_icons.html.twig' as ui -%}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}GestionDevis{% endblock %} · GestionDevis</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧾</text></svg>">
+    <meta name="theme-color" content="#1a1714">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230f766e%22/><path d=%22M10 16.5l4 4 8-9%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
     {% block javascripts %}{{ importmap('app') }}{% endblock %}
 </head>
 <body>
     {% if is_granted('ROLE_USER') %}
-        <header class="topbar">
-            <a class="brand" href="{{ path('app_dashboard') }}">🧾 GestionDevis</a>
-            <nav aria-label="Navigation principale">
-                <a href="{{ path('app_dashboard') }}" {% if app.request.attributes.get('_route') == 'app_dashboard' %}aria-current="page"{% endif %}>Tableau de bord</a>
-                <a href="{{ path('app_client_index') }}" {% if app.request.attributes.get('_route') starts with 'app_client' %}aria-current="page"{% endif %}>Clients</a>
-                <a href="{{ path('app_quote_index') }}" {% if app.request.attributes.get('_route') starts with 'app_quote' %}aria-current="page"{% endif %}>Devis</a>
-            </nav>
-            <div class="user">
-                <span>{{ app.user.companyName }}</span>
-                <a href="{{ path('app_logout') }}">Déconnexion</a>
+        {% set route = app.request.attributes.get('_route') %}
+        <div class="shell">
+            <header class="sidebar">
+                <a class="brand" href="{{ path('app_dashboard') }}">
+                    <span class="brand-mark">{{ ui.icon('logo', 18) }}</span>
+                    GestionDevis
+                </a>
+                <a class="btn btn-primary sidebar-cta" href="{{ path('app_quote_new') }}">{{ ui.icon('plus', 16) }} Nouveau devis</a>
+                <nav aria-label="Navigation principale">
+                    <a href="{{ path('app_dashboard') }}" {% if route == 'app_dashboard' %}aria-current="page"{% endif %}>{{ ui.icon('dashboard') }} Tableau de bord</a>
+                    <a href="{{ path('app_quote_index') }}" {% if route starts with 'app_quote' %}aria-current="page"{% endif %}>{{ ui.icon('file') }} Devis</a>
+                    <a href="{{ path('app_client_index') }}" {% if route starts with 'app_client' %}aria-current="page"{% endif %}>{{ ui.icon('users') }} Clients</a>
+                </nav>
+                <div class="user">
+                    <span class="user-avatar" aria-hidden="true">{{ app.user.companyName|first|upper }}</span>
+                    <span class="user-name">{{ app.user.companyName }}</span>
+                    <a class="user-logout" href="{{ path('app_logout') }}">{{ ui.icon('logout', 16) }} Déconnexion</a>
+                </div>
+            </header>
+
+        {% endif %}
+
+        <main class="{{ is_granted('ROLE_USER') ? 'main' : 'main main-public' }}">
+            <div class="container">
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="flash flash-{{ type }}" role="status">{{ message }}</div>
+                    {% endfor %}
+                {% endfor %}
+
+                {% block body %}{% endblock %}
             </div>
-        </header>
+        </main>
+    {% if is_granted('ROLE_USER') %}
+        </div>
     {% endif %}
-
-    <main class="container">
-        {% for type, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash flash-{{ type }}" role="status">{{ message }}</div>
-            {% endfor %}
-        {% endfor %}
-
-        {% block body %}{% endblock %}
-    </main>
 </body>
 </html>

@@ -1,33 +1,79 @@
 {% extends 'base.html.twig' %}
+{% import '_icons.html.twig' as ui %}
 
 {% block title %}Tableau de bord{% endblock %}
 
 {% block body %}
 <div class="page-head">
-    <h1>Tableau de bord</h1>
+    <div>
+        <p class="eyebrow">Bonjour, {{ app.user.companyName }}</p>
+        <h1>Tableau de bord</h1>
+    </div>
     <div class="actions">
-        <a class="btn" href="{{ path('app_client_new') }}">+ Client</a>
-        <a class="btn btn-primary" href="{{ path('app_quote_new') }}">+ Devis</a>
+        <a class="btn" href="{{ path('app_client_new') }}">{{ ui.icon('plus', 16) }} Client</a>
+        <a class="btn btn-primary" href="{{ path('app_quote_new') }}">{{ ui.icon('plus', 16) }} Devis</a>
     </div>
 </div>
 
-<section class="stats">
-    <a class="card stat" href="{{ path('app_client_index') }}">
-        <span class="stat-value">{{ client_count }}</span>
-        <span class="stat-label">Clients</span>
+<section class="kpis" aria-label="Indicateurs">
+    <a class="card kpi kpi-accent" href="{{ path('app_quote_index', {status: 'accepted'}) }}">
+        <span class="kpi-label">{{ ui.icon('check', 16) }} Signé</span>
+        <span class="kpi-value">{{ signed_total|money }}</span>
+        <span class="kpi-hint">{{ counts.accepted|default(0) }} devis accepté{{ counts.accepted|default(0) > 1 ? 's' }}</span>
     </a>
-    {% for status in statuses %}
-        <a class="card stat" href="{{ path('app_quote_index', {status: status.value}) }}">
-            <span class="stat-value">{{ counts[status.value]|default(0) }}</span>
-            <span class="stat-label">Devis {{ status.label|lower }}{{ (counts[status.value]|default(0)) > 1 ? 's' : '' }}</span>
-        </a>
-    {% endfor %}
+    <a class="card kpi" href="{{ path('app_quote_index', {status: 'sent'}) }}">
+        <span class="kpi-label">{{ ui.icon('clock', 16) }} En attente de réponse</span>
+        <span class="kpi-value">{{ pending_total|money }}</span>
+        <span class="kpi-hint">{{ counts.sent|default(0) }} devis envoyé{{ counts.sent|default(0) > 1 ? 's' }}</span>
+    </a>
+    <div class="card kpi">
+        <span class="kpi-label">{{ ui.icon('trend', 16) }} Taux d'acceptation</span>
+        <span class="kpi-value">{{ acceptance_rate is null ? '—' : acceptance_rate ~ ' %' }}</span>
+        <span class="kpi-hint">sur les devis ayant reçu une réponse</span>
+    </div>
+    <a class="card kpi" href="{{ path('app_client_index') }}">
+        <span class="kpi-label">{{ ui.icon('users', 16) }} Clients</span>
+        <span class="kpi-value">{{ client_count }}</span>
+        <span class="kpi-hint">{{ quote_count }} devis au total</span>
+    </a>
 </section>
 
 <section class="card">
-    <h2>Derniers devis</h2>
+    <div class="card-head">
+        <h2>Répartition des devis</h2>
+        <a href="{{ path('app_quote_index') }}">Tout voir</a>
+    </div>
+    {% if quote_count > 0 %}
+        <div class="pipeline" aria-hidden="true">
+            {% for status in statuses %}
+                {% set n = counts[status.value]|default(0) %}
+                {% if n > 0 %}<span class="pipeline-seg status-{{ status.value }}" style="flex-grow: {{ n }}"></span>{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <ul class="pipeline-legend">
+        {% for status in statuses %}
+            <li>
+                <a href="{{ path('app_quote_index', {status: status.value}) }}">
+                    <span class="dot status-{{ status.value }}"></span>
+                    <span class="stat-label">Devis {{ status.label|lower }}{{ (counts[status.value]|default(0)) > 1 ? 's' : '' }}</span>
+                    <strong class="stat-value">{{ counts[status.value]|default(0) }}</strong>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="card">
+    <div class="card-head">
+        <h2>Derniers devis</h2>
+        <a href="{{ path('app_quote_index') }}">Tous les devis</a>
+    </div>
     {% if recent is empty %}
-        <p class="muted">Aucun devis pour l'instant. <a href="{{ path('app_quote_new') }}">Créez votre premier devis</a>.</p>
+        <div class="empty">
+            <p>Aucun devis pour l'instant.</p>
+            <a class="btn btn-primary" href="{{ path('app_quote_new') }}">{{ ui.icon('plus', 16) }} Créer votre premier devis</a>
+        </div>
     {% else %}
         <div class="table-wrap">
         <table class="table-stack">
@@ -35,7 +81,7 @@
             <tbody>
             {% for quote in recent %}
                 <tr>
-                    <td><a href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
+                    <td><a class="doc-number" href="{{ path('app_quote_show', {id: quote.id}) }}">{{ quote.number }}</a></td>
                     <td data-label="Client">{{ quote.client.name }}</td>
                     <td data-label="Date">{{ quote.issueDate|date('d/m/Y') }}</td>
                     <td data-label="Statut">{% include '_status_badge.html.twig' %}</td>
